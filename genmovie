@@ -1,0 +1,9 @@
+#!/bin/sh
+#convert julia.pgm julia0000.png
+for i in imgs/julia_????.pgm
+do
+convert $i imgs/`basename $i .pgm`.png
+done
+ffmpeg -framerate 5 -i imgs/julia_%04d.png -s:v 800x600 -c:v libx264 \
+-profile:v high -crf 20 -pix_fmt yuv420p julia.mp4
+
