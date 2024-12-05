@@ -10,38 +10,27 @@
 #include "fractalfuncs.h"
 #include <string.h>
 
-void Generate(struct IMG * img){
-    int j=0;
+#ifdef _OPENMP
+    #include <omp.h>
+#else
+    #define omp_get_thread_num() 0
+#endif
+
+void Generate(struct IMG * img) {
+    int color, i, j;
     int scrsizex,scrsizey;
     scrsizex=img->cols;
     scrsizey=img->rows;
-
-    int idx = 0;
-    char file_idx[5] = "0000";
-    char fname[20] = "imgs/julia_0000.pgm";
-    //fname[6] = '4';
-    printf("%s\n", fname);
-
-    int color = 0;
-    
-    do {
-        j = 0;
-        do {//Start vertical loop
-	        int i = 0;
-	        do {							  			   //Start horizontal loop				
-	            julia(img,i,j, color);							   
-	            i++;
-            }while((i<scrsizex));	  //End horizontal loop
-	        j++;
-        }while((j<scrsizey));        //End vertical loop
-
-        saveimg(img, fname);
-        idx++;
-        snprintf(file_idx, sizeof(file_idx), "%04d", idx);
-        memcpy(&fname[11], file_idx, 4);
-    
-        color++;
-    }while(color < initer);
+    char filename[80];
+    for(int color = 0; color < initer; color++) {
+        for(int j = 0; j < scrsizey; j++) {
+            for(int i = 0; i < scrsizex; i++) {
+                julia(img, i, j, color);
+            }
+        }
+        sprintf(filename, "imgs/julia_%04d.pgm", color);
+        saveimg(img, filename);
+    }
 }
 
 //saveimg(img, fname);
@@ -115,7 +104,7 @@ int main(int argc, char ** argv){
     t2=clock();
     printf("Julia Fractal gerado em %6.3f secs.\n",(((double)(t2-t1))/CLOCKS_PER_SEC));
     //	mandel(img,resx,resy);
-    saveimg(img,"julia.pgm");
+    //saveimg(img,"julia.pgm");
     
     if(nepocs>0)
 	difuse(img,nepocs,alpha);

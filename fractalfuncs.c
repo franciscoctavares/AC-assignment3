@@ -76,6 +76,10 @@ void saveimg(struct IMG * img, char * fname){
 	rx=img->cols;
 	ry=img->rows;
 	fp=fopen(fname,"w");
+    if(fp == NULL) {
+        printf("Could not open file!");
+        return;
+    }
 	/* header for PPM output */
 	fprintf(fp,"P6\n# CREATOR: AC Course, DEEC-UC\n");
 	fprintf(fp,"%d %d\n255\n",rx,ry);

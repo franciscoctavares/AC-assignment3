@@ -1,5 +1,7 @@
 fractal: clean fractal.c fractalfuncs.c
-	gcc -g fractalfuncs.c fractal.c -o fractal
+	gcc -c fractalfuncs.c
+	gcc -c -fopenmp fractal.c
+	gcc -o fractal fractal.o fractalfuncs.o
 	chmod 755 genmovie
 convert:
 	for file in imgs/*.pgm; do \
