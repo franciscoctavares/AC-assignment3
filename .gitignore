@@ -1,4 +1,6 @@
-imgs/*.*
+imgs/normal/*
+imgs/difusion/*
 lixo
 julia.pgm
+julia_normal.png
 *.o
