@@ -7,33 +7,21 @@
 #include <math.h>
 #include <stdio.h>
 #include "fractalfuncs.h"
-#include <string.h>
 
-#ifdef _OPENMP
-    #include <omp.h>
-#else
-    #define omp_get_thread_num() 0
-#endif
-
-void Generate(struct IMG * img) {
+void Generate(struct IMG * img){
     int color, i, j;
     int scrsizex,scrsizey;
     scrsizex=img->cols;
     scrsizey=img->rows;
     char filename[80];
-    #pragma omp parallel
-    {
-        #pragma omp for
-        for(int color = 0; color < initer; color++) 
-        {
-            for(int j = 0; j < scrsizey; j++) {
-                for(int i = 0; i < scrsizex; i++) {
-                    julia(img, i, j, color);
-                }
+    for(int color = 0; color < initer; color++) {
+        for(int j = 0; j < scrsizey; j++) {
+            for(int i = 0; i < scrsizex; i++) {
+                julia(img, i, j, color);
             }
-            sprintf(filename, "imgs/normal/julia_%04d.pgm", color);
-            saveimg(img, filename);
         }
+        sprintf(filename, "imgs/normal/julia_%04d.pgm", color);
+        saveimg(img, filename);
     }
 }
 
@@ -42,56 +30,26 @@ void difuse(struct IMG * imgin, int nepocs, float alpha){
     int i;
     char filename[80];
     
-    imgnew = (struct IMG *) malloc(sizeof(struct IMG));
-    imgnew->rows = imgin->rows;
-    imgnew->cols = imgin->cols;
-    imgnew->pixels = (PIXEL *)malloc(imgnew->cols*imgnew->rows*sizeof(PIXEL));
-
-    float alpha_avg = alpha / 8;
-    #pragma omp parallel
-    {
-        #pragma omp for
-        {
-            for (i = 1; i <= nepocs; i++){
-                // apply diffusion for each color channel, NEVER mixing them...
-            
-                // YOUR CODE HERE
-                int nrows = imgnew->rows;
-                int ncols = imgnew->cols;
-                for(int y = 1; y < imgnew->rows - 1; y++) {
-                    for(int x = 1; x < imgnew->cols - 1; x++) {
-                        // red
-                        imgnew->pixels[y*ncols+x].r = (1 - alpha)*imgin->pixels[y*ncols+x].r + alpha_avg*(imgin->pixels[(y-1)*ncols+(x-1)].r
-                                                    + imgin->pixels[(y-1)*ncols+(x-1)].r + imgin->pixels[(y-1)*ncols+(x)].r + imgin->pixels[(y-1)*ncols+(x+1)].r
-                                                    + imgin->pixels[(y)*ncols+(x-1)].r + imgin->pixels[(y)*ncols+(x+1)].r + imgin->pixels[(y+1)*ncols+(x-1)].r
-                                                    + imgin->pixels[(y+1)*ncols+(x)].r + imgin->pixels[(y+1)*ncols+(x+1)].r);
-                        // green
-                        imgnew->pixels[y*ncols+x].g = (1 - alpha)*imgin->pixels[y*ncols+x].g + (alpha/8)*(imgin->pixels[(y-1)*ncols+(x-1)].g
-                                                    + imgin->pixels[(y-1)*ncols+(x-1)].g + imgin->pixels[(y-1)*ncols+(x)].g + imgin->pixels[(y-1)*ncols+(x+1)].g
-                                                    + imgin->pixels[(y)*ncols+(x-1)].g + imgin->pixels[(y)*ncols+(x+1)].g + imgin->pixels[(y+1)*ncols+(x-1)].g
-                                                    + imgin->pixels[(y+1)*ncols+(x)].g + imgin->pixels[(y+1)*ncols+(x+1)].g);
-                        // blue
-                        imgnew->pixels[y*ncols+x].b = (1 - alpha)*imgin->pixels[y*ncols+x].b + (alpha/8)*(imgin->pixels[(y-1)*ncols+(x-1)].b
-                                                    + imgin->pixels[(y-1)*ncols+(x-1)].b + imgin->pixels[(y-1)*ncols+(x)].b + imgin->pixels[(y-1)*ncols+(x+1)].b
-                                                    + imgin->pixels[(y)*ncols+(x-1)].b + imgin->pixels[(y)*ncols+(x+1)].b + imgin->pixels[(y+1)*ncols+(x-1)].b
-                                                    + imgin->pixels[(y+1)*ncols+(x)].b + imgin->pixels[(y+1)*ncols+(x+1)].b);
-                        
-                    }
-                }
-            
-            
-                sprintf(filename, "imgs/difusion/julia_%04d.pgm", i);
-                saveimg(imgnew, filename);
-                temp = imgin;
-                imgin = imgnew;
-                imgnew = temp;
-            }
-        }
+    imgnew=(struct IMG *) malloc(sizeof(struct IMG));
+    imgnew->rows=imgin->rows;
+    imgnew->cols=imgin->cols;
+    imgnew->pixels=(PIXEL *)malloc(imgnew->cols*imgnew->rows*sizeof(PIXEL));
+    for (i=1;i<=nepocs;i++){
+	// apply diffusion for each color channel, NEVER mixing them...
+	
+	// YOUR CODE HERE
+	
+	
+	sprintf(filename,"julia%04d.pgm",i);
+	saveimg(imgnew,filename);
+	temp=imgin;
+	imgin=imgnew;
+	imgnew=temp;
     }
 }
     
 int main(int argc, char ** argv){
-    clock_t t1,t2,t3;
+    clock_t t1,t2;
     int resx,resy;
     struct IMG * img;
     int nepocs=0;
@@ -133,11 +91,7 @@ int main(int argc, char ** argv){
     t2=clock();
     printf("Julia Fractal gerado em %6.3f secs.\n",(((double)(t2-t1))/CLOCKS_PER_SEC));
     //	mandel(img,resx,resy);
-    saveimg(img, "julia.pgm");
-    difuse(img, 50, 0.5);
-    t3=clock();
-    printf("Julia Fractal com difusão gerado em %6.3f secs.\n",(((double)(t3-t2))/CLOCKS_PER_SEC));
-    printf("Tempo total: %6.3f secs.\n", (((double)(t3-t1))/CLOCKS_PER_SEC));
+    //saveimg(img,"julia.pgm");
     
     if(nepocs>0)
 	difuse(img,nepocs,alpha);
