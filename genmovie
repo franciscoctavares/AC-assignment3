@@ -1,9 +1,20 @@
 #!/bin/sh
-#convert julia.pgm julia0000.png
-for i in imgs/julia_????.pgm
+
+for i in imgs/normal/julia_????.pgm
 do
-convert $i imgs/`basename $i .pgm`.png
+    convert $i imgs/normal/`basename $i .pgm`.png
+    rm $i
 done
-ffmpeg -framerate 5 -i imgs/normal/julia_%04d.png -s:v 3840x2160 -c:v libx264 \
+
+for i in imgs/difusion/julia_????.pgm
+do
+    convert $i imgs/difusion/`basename $i .pgm`.png
+    rm $i
+done
+
+ffmpeg -framerate 5 -i imgs/normal/julia_%04d.png -s:v 640x480 -c:v libx264 \
 -profile:v high -crf 20 -pix_fmt yuv420p julia.mp4
+
+ffmpeg -framerate 5 -i imgs/difusion/julia_%04d.png -s:v 640x480 -c:v libx264 \
+-profile:v high -crf 20 -pix_fmt yuv420p julia_difusion.mp4
 
