@@ -65,3 +65,11 @@ OpenMP(sem collapse(2))                 OpenMP(com collapse(2))                 
                                     |                                         |
 ---------------------------------   |   ---------------------------------     |   ---------------------------------
 
+
+Difusão
+3840x2160
+(tempo de CPU, e não tempo real)
+epochs = 50, alpha = 0.1  -> 35.717s
+epochs = 50, alpha = 0.2  -> 36.245s
+epochs = 100, alpha = 0.2 -> 74.161s
+epochs = 150, alpha = 0.3 -> 111.781s
