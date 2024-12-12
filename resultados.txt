@@ -66,10 +66,18 @@ OpenMP(sem collapse(2))                 OpenMP(com collapse(2))                 
 ---------------------------------   |   ---------------------------------     |   ---------------------------------
 
 
-Difusão
+Difusão(Sem optimizações)
 3840x2160
-(tempo de CPU, e não tempo real)
-epochs = 50, alpha = 0.1  -> 35.717s
-epochs = 50, alpha = 0.2  -> 36.245s
-epochs = 100, alpha = 0.2 -> 74.161s
-epochs = 150, alpha = 0.3 -> 111.781s
+epochs = 50, alpha = 0.1  -> 16.723s
+epochs = 50, alpha = 0.2  -> 17.275s
+epochs = 100, alpha = 0.2 -> 33.891s
+epochs = 150, alpha = 0.3 -> 51.440s
+epochs = 200, alpha = 0.4 -> 67.405s
+
+Difusão(OpenMP)
+3840x2160
+epochs = 50, alpha = 0.1  -> 10.451s
+epochs = 50, alpha = 0.2  -> 10.632s
+epochs = 100, alpha = 0.2 -> 20.923s
+epochs = 150, alpha = 0.3 -> 30.946s
+epochs = 200, alpha = 0.4 -> 41.954s
