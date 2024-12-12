@@ -4,7 +4,7 @@
 #define Minx -2.0            // Leftmost Real point
 #define  Maxy 1.0             // Uppermost Imaginary point
 #define  Miny -1.0            // Lowermost Imaginary point
-#define initer 50          // # of times to repeat function
+#define initer 300          // # of times to repeat function
 
 
 typedef struct Pixel

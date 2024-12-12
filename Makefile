@@ -16,4 +16,4 @@ convert:
 	convert julia.pgm julia_normal.png
 	rm julia.pgm
 clean:
-	rm -f *.png fractal fractal_omp imgs/difusion/* imgs/normal/* julia*.p* imgs/*.pgm imgs/*.png
+	rm -f fractal fractal_omp imgs/difusion/* imgs/normal/* imgs/*.pgm imgs/*.png
